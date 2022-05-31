@@ -5,7 +5,8 @@
   "homepage": "https://github.com/alitopaloglu/magento2-event-observer-lister",
   "license": "MIT",
   "require": {
-    "php": ">=7.4"
+    "php": ">=7.4",
+    "magento/framework": "*"
   },
   "keywords": [
     "magento",

@@ -5,50 +5,50 @@ declare(strict_types=1);
 namespace AliTopaloglu\EventObserverLister\Plugin;
 
 use AliTopaloglu\EventObserverLister\Helper\Data as Helper;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Exception;
 use Magento\Framework\Event\ConfigInterface;
 
 class Manager
 {
     const UNIQUE_SEPARATOR = '_';
 
-    private AdapterInterface $connection;
     private Helper $helper;
     private ConfigInterface $eventConfig;
 
     private array $list = [];
 
     /**
-     * @param ResourceConnection $resource
      * @param ConfigInterface $eventConfig
      * @param Helper $helper
      */
-    public function __construct(ResourceConnection $resource, ConfigInterface $eventConfig, Helper $helper)
+    public function __construct(ConfigInterface $eventConfig, Helper $helper)
     {
-        $this->connection = $resource->getConnection();
         $this->helper = $helper;
         $this->eventConfig = $eventConfig;
     }
 
     public function beforeDispatch(\Magento\Framework\Event\Manager $subject, string $eventName, array $data)
     {
-        $this->initList();
-        $eventName = mb_strtolower($eventName);
+        try {
+            $this->initList();
+            $eventName = mb_strtolower($eventName);
 
-        foreach ($this->eventConfig->getObservers($eventName) as $observerConfig) {
-            $observer = [
-                'event_name' => $eventName,
-                'observer_name' => $observerConfig['name'],
-                'instance' => $observerConfig['instance'],
-                'shared' => $this->getIsShared($observerConfig),
-                'disabled' => $this->getIsDisabled($observerConfig)
-            ];
-            $uniqueKey = $this->getUniqueKey($observer);
+            foreach ($this->eventConfig->getObservers($eventName) as $observerConfig) {
+                $observer = [
+                    'event_name' => $eventName,
+                    'observer_name' => $observerConfig['name'],
+                    'instance' => $observerConfig['instance'],
+                    'shared' => $this->getIsShared($observerConfig),
+                    'disabled' => $this->getIsDisabled($observerConfig)
+                ];
+                $uniqueKey = $this->getUniqueKey($observer);
 
-            if (!$this->isExistInList($uniqueKey)) {
-                $this->addToList($uniqueKey, $observer);
+                if (!$this->isExistInList($uniqueKey)) {
+                    $this->addToList($uniqueKey, $observer);
+                }
             }
+        } catch (Exception $e) {
+            $this->helper->logException($e);
         }
 
         return null;
@@ -59,8 +59,8 @@ class Manager
         if (empty($this->list)) {
             $listTableName = $this->helper->getListTable();
 
-            $query = $this->connection->select()->from($listTableName);
-            $list = $this->connection->fetchAll($query);
+            $query = $this->helper->getConnection()->select()->from($listTableName);
+            $list = $this->helper->getConnection()->fetchAll($query);
 
             if (!empty($list)) {
                 foreach ($list as $observer) {
@@ -101,7 +101,7 @@ class Manager
 
     private function addToList(string $uniqueKey, array $metaData)
     {
-        $this->connection->insert($this->helper->getListTable(), $metaData);
+        $this->helper->getConnection()->insert($this->helper->getListTable(), $metaData);
         $this->list[$uniqueKey] = $metaData;
     }
 }
