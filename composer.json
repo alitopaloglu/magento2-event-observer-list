@@ -1,0 +1,29 @@
+{
+  "name": "alitopaloglu/magento2-event-observer-lister",
+  "description": "Magento2 Event Observer Lister",
+  "type": "magento2-module",
+  "homepage": "https://github.com/alitopaloglu/magento2-event-observer-lister",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.4"
+  },
+  "keywords": [
+    "magento",
+    "magento2",
+    "event",
+    "observer",
+    "list"
+  ],
+  "authors": [
+    {
+      "name": "Ali Topaloğlu",
+      "email": "info@alitopaloglu.com",
+      "homepage": "https://github.com/alitopaloglu",
+      "role": "Software Architect"
+    }
+  ],
+  "autoload": {
+    "psr-4": { "AliTopaloglu\\EventObserverLister\\": "src" },
+    "files": [ "src/registration.php" ]
+  }
+}
