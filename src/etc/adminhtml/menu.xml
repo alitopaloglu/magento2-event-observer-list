@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AliTopaloglu_EventObserverLister::event_observer_lister"
+             title="Event Observer Lister"
+             module="AliTopaloglu_EventObserverLister"
+             sortOrder="300"
+             parent="Magento_Backend::system"
+             resource="AliTopaloglu_EventObserverLister::event_observer_lister"/>
+        <add id="AliTopaloglu_EventObserverLister::event_observer_lister_list"
+             title="Show List"
+             module="AliTopaloglu_EventObserverLister"
+             sortOrder="10"
+             parent="AliTopaloglu_EventObserverLister::event_observer_lister"
+             action="eventobserverlister/lister/index"
+             resource="AliTopaloglu_EventObserverLister::event_observer_lister_list"/>
+    </menu>
+</config>

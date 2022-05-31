@@ -10,11 +10,10 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Psr\Log\LoggerInterface;
+use AliTopaloglu\EventObserverLister\Model\ResourceModel\Lister;
 
 class Data extends AbstractHelper
 {
-    const LIST_TABLE = 'alitopaloglu_event_observer_lister';
-
     private AdapterInterface $connection;
     private LoggerInterface $logger;
 
@@ -27,7 +26,7 @@ class Data extends AbstractHelper
 
     public function getListTable(): string
     {
-        return self::LIST_TABLE;
+        return Lister::LIST_TABLE;
     }
 
     public function getConnection(): AdapterInterface
@@ -44,7 +43,7 @@ class Data extends AbstractHelper
 
     public function isModuleReadyToWork(): bool
     {
-        $check = $this->getConnection()->fetchAll('SHOW TABLES LIKE "' . self::LIST_TABLE . '"');
+        $check = $this->getConnection()->fetchAll('SHOW TABLES LIKE "' . $this->getListTable() . '"');
         return !empty($check);
     }
 }
